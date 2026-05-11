@@ -1,0 +1,173 @@
+<div class="admin-dashboard">
+  <!-- Header -->
+  <header class="admin-header">
+    <div class="header-content">
+      <h1>Dashboard Admin</h1>
+      <div class="user-info">
+        <span>{{ currentUser()?.prenom }} {{ currentUser()?.nom }}</span>
+        <button (click)="logout()" class="logout-btn">Déconnexion</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  <div class="messages">
+    <div *ngIf="successMessage()" class="success-message">
+      {{ successMessage() }}
+    </div>
+    <div *ngIf="errorMessage()" class="error-message">
+      {{ errorMessage() }}
+    </div>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <nav class="tabs-nav">
+    <button
+      (click)="switchTab('reservations')"
+      [class.active]="activeTab() === 'reservations'"
+      class="tab-btn"
+    >
+      📅 Historique Réservations
+    </button>
+    <button
+      (click)="switchTab('users')"
+      [class.active]="activeTab() === 'users'"
+      class="tab-btn"
+    >
+      👥 Gestion Utilisateurs
+    </button>
+  </nav>
+
+  <div class="content">
+    <!-- TAB 1: RÉSERVATIONS -->
+    <div *ngIf="activeTab() === 'reservations'" class="tab-content">
+      <h2>Historique des réservations</h2>
+      
+      <div *ngIf="loading()" class="loading">Chargement...</div>
+
+      <table *ngIf="!loading() && reservations().length > 0" class="reservations-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Prestation</th>
+            <th>Client</th>
+            <th>Date Réservation</th>
+            <th>Date Prestation</th>
+            <th>Lieu</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let res of reservations()">
+            <td>{{ res.id_reservation }}</td>
+            <td>{{ res.nom_prestation }}</td>
+            <td>{{ res.client_prenom }} {{ res.client_nom }}</td>
+            <td>{{ res.date_reservation | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ res.date_prestation | date: 'dd/MM/yyyy' }}</td>
+            <td>{{ res.rue }}, {{ res.code_postal }} {{ res.ville }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!loading() && reservations().length === 0" class="no-data">
+        Aucune réservation found
+      </div>
+    </div>
+
+    <!-- TAB 2: GESTION UTILISATEURS -->
+    <div *ngIf="activeTab() === 'users'" class="tab-content">
+      <h2>Gestion des utilisateurs</h2>
+
+      <div *ngIf="loading()" class="loading">Chargement...</div>
+
+      <table *ngIf="!loading() && users().length > 0" class="users-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Rôle</th>
+            <th>Date Inscription</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let user of users()" [class.banned]="user.is_banned">
+            <td>{{ user.id_utilisateur }}</td>
+            <td>{{ user.prenom }} {{ user.nom }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="role-badge" [class]="user.role?.toLowerCase()">
+                {{ user.role }}
+              </span>
+            </td>
+            <td>{{ user.date_inscription | date: 'dd/MM/yyyy' }}</td>
+            <td>
+              <span class="status" [class.banned]="user.is_banned">
+                {{ user.is_banned ? '🚫 Banni' : '✅ Actif' }}
+              </span>
+            </td>
+            <td class="actions">
+              <button
+                (click)="changeUserRole(user.id_utilisateur, user.role || '')"
+                class="btn btn-role"
+                [disabled]="user.is_banned"
+                title="Changer le rôle"
+              >
+                🔄 Rôle
+              </button>
+              <button
+                (click)="toggleBan(user.id_utilisateur, user.prenom + ' ' + user.nom, user.is_banned)"
+                [class]="user.is_banned ? 'btn btn-unban' : 'btn btn-ban'"
+                [title]="user.is_banned ? 'Débannir' : 'Bannir'"
+              >
+                {{ user.is_banned ? '🔓 Débannir' : '🔒 Bannir' }}
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!loading() && users().length === 0" class="no-data">
+        Aucun utilisateur trouvé
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Changement de rôle -->
+  <div *ngIf="selectedRoleChange()" class="modal-overlay" (click)="closeRoleModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Changer le rôle</h3>
+      <p>Êtes-vous sûr de vouloir assigner le rôle <strong>{{ selectedRoleChange()?.newRole }}</strong> ?</p>
+      <div class="modal-actions">
+        <button (click)="confirmRoleChange()" class="btn btn-success" [disabled]="loading()">
+          Confirmer
+        </button>
+        <button (click)="closeRoleModal()" class="btn btn-cancel" [disabled]="loading()">
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Bannissement -->
+  <div *ngIf="selectedUserForBan()" class="modal-overlay" (click)="closeBanModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Confirmer l'action</h3>
+      <p *ngIf="!users().find(u => u.id_utilisateur === selectedUserForBan()?.userId)?.is_banned">
+        Vous êtes sur le point de <strong>bannir</strong> {{ selectedUserForBan()?.name }}. Cette action empêchera l'utilisateur de se connecter.
+      </p>
+      <p *ngIf="users().find(u => u.id_utilisateur === selectedUserForBan()?.userId)?.is_banned">
+        Vous êtes sur le point de <strong>débannir</strong> {{ selectedUserForBan()?.name }}. L'utilisateur pourra à nouveau se connecter.
+      </p>
+      <div class="modal-actions">
+        <button (click)="confirmBan()" class="btn btn-success" [disabled]="loading()">
+          Confirmer
+        </button>
+        <button (click)="closeBanModal()" class="btn btn-cancel" [disabled]="loading()">
+          Annuler
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,248 @@
+﻿.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 20%, #0f3460 50%, #533483 80%, #e94560 100%);
+  background-size: 400% 400%;
+  animation: gradientWave 18s ease infinite;
+  font-family: 'Inter', sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 148, 184, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.login-box {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  padding: 50px;
+  width: 100%;
+  max-width: 420px;
+  animation: slideUp 0.6s ease-out;
+  border: 1px solid rgba(0, 148, 184, 0.1);
+  backdrop-filter: blur(10px);
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-size: 2.5rem;
+  color: #0094b8;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.header p {
+  color: #888;
+  font-size: 0.9rem;
+  margin: 10px 0 0 0;
+}
+
+.login-form {
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e5e5e5;
+  border-radius: 10px;
+  font-size: 1rem;
+  transition: all 0.3s;
+  box-sizing: border-box;
+  background: #fafafa;
+  font-weight: 500;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #0094b8;
+  box-shadow: 0 0 0 4px rgba(0, 148, 184, 0.15);
+  background: #fff;
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border-left: 4px solid #c33;
+}
+
+.btn-login,
+.btn-register {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btn-login {
+  background: linear-gradient(135deg, #0094b8, #0075a5);
+  color: white;
+  margin-bottom: 0;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 15px rgba(0, 148, 184, 0.3);
+}
+
+.btn-login:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(0, 148, 184, 0.4);
+  filter: brightness(1.1);
+}
+
+.btn-login:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.divider {
+  text-align: center;
+  margin: 30px 0;
+  color: #aaa;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn-register {
+  background-color: white;
+  color: #1a1a1a;
+  margin-bottom: 20px;
+  border: 2px solid #d0d0d0;
+  font-weight: 600;
+}
+
+.btn-register:hover {
+  background-color: #e8f4f8;
+  color: #0094b8;
+  border-color: #0094b8;
+  box-shadow: 0 4px 12px rgba(0, 148, 184, 0.2);
+}
+
+.demo-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 2px solid #f0f0f0;
+}
+
+.demo-text {
+  text-align: center;
+  color: #999;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.demo-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.demo-btn {
+  padding: 8px 12px;
+  border: 2px solid #d0d0d0;
+  border-radius: 8px;
+  background: white;
+  color: #666;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.demo-btn:hover {
+  background-color: #e8f4f8;
+  color: #0f3460;
+  border-color: #0f3460;
+  box-shadow: 0 4px 12px rgba(15, 52, 96, 0.15);
+}
+
+.demo-section-title {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: 700;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.demo-client:hover {
+  border-color: #0f3460;
+  color: #0f3460;
+  background-color: #e8f4f8;
+}
+
+.demo-admin:hover {
+  border-color: #0094b8;
+  color: #0094b8;
+  background-color: #e8f4f8;
+}
+
+.demo-prestataire:hover {
+  border-color: #ffa500;
+  color: #ff8c00;
+  background-color: #fffbf0;
+}
+
+@keyframes gradientWave {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

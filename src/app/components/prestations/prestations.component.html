@@ -1,0 +1,179 @@
+<div class="prestations-container">
+  <!-- Header -->
+  <div class="header-bar">
+    <div class="header-content">
+      <h1>Sun & Bass</h1>
+      <div class="user-section" *ngIf="currentUser()">
+        <span class="user-name">Bonjour {{ currentUser()?.prenom }}</span>
+        <button class="btn-profile" (click)="goToProfile()">👤 Mon Profil</button>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <div class="prestations-header">
+      <h2>Annonces des Prestataires</h2>
+      <p>Découvrez nos partenaires DJ et réservez vos prestations</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading()" class="loading">
+      <div class="spinner"></div>
+      <p>Chargement des prestations...</p>
+    </div>
+
+    <!-- Prestations Grid -->
+    <div *ngIf="!loading()" class="prestations-grid">
+      <div *ngFor="let prestation of prestations()" class="prestation-card">
+        <div class="card-header">
+          <h3>{{ prestation.nom_prestation }}</h3>
+          <div class="rating">
+            <span *ngFor="let star of getStarArray(prestation.prestataire.note)" class="star" [class.filled]="star === 1">★</span>
+            <span class="rating-text">{{ prestation.prestataire.note?.toFixed(1) }} ({{ prestation.prestataire.nombreAvis }} avis)</span>
+          </div>
+        </div>
+
+        <p class="description">{{ prestation.description_presta }}</p>
+
+        <div class="card-body">
+          <div class="prestataire-info">
+            <h4>{{ prestation.prestataire.prenom }} {{ prestation.prestataire.nom }}</h4>
+            <p class="email">{{ prestation.prestataire.email }}</p>
+          </div>
+
+          <div class="card-footer">
+            <div class="price">
+              <span class="label">À partir de</span>
+              <span class="amount">{{ prestation.prix | number: '1.2-2' }} €</span>
+            </div>
+            <button class="btn-reserve" (click)="reserverPrestation(prestation)">
+              Réserver
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading() && prestations().length === 0" class="empty-state">
+      <p>Aucune prestation disponible pour le moment.</p>
+    </div>
+  </div>
+
+  <!-- Reservation Modal -->
+  <div *ngIf="showReservationModal()" class="modal-overlay" (click)="closeReservationModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeReservationModal()">✕</button>
+      
+      <div class="modal-header">
+        <h2>Effectuer une réservation</h2>
+        <p class="prestation-name">{{ selectedPrestation()?.nom_prestation }}</p>
+      </div>
+
+      <div class="modal-body">
+        <!-- Prestation Info -->
+        <div class="info-section">
+          <h3>Prestataire</h3>
+          <div class="prestataire-details">
+            <p><strong>{{ selectedPrestation()?.prestataire?.prenom }} {{ selectedPrestation()?.prestataire?.nom }}</strong></p>
+            <p>{{ selectedPrestation()?.prestataire?.email }}</p>
+            <p class="price">À partir de {{ selectedPrestation()?.prix | number: '1.2-2' }} €</p>
+          </div>
+        </div>
+
+        <!-- Booking Form -->
+        <form class="reservation-form">
+          <div class="form-group">
+            <label for="date">Date de l'événement *</label>
+            <input type="date" id="date" [ngModel]="reservationDate()" (ngModelChange)="reservationDate.set($event)" name="date" required>
+          </div>
+
+          <div class="form-group">
+            <label for="heure">Heure de début *</label>
+            <input type="time" id="heure" [ngModel]="reservationHeure()" (ngModelChange)="reservationHeure.set($event)" name="heure" required>
+          </div>
+
+          <div class="form-group">
+            <label for="lieu">Lieu de l'événement *</label>
+            <input type="text" id="lieu" [ngModel]="reservationLieu()" (ngModelChange)="reservationLieu.set($event)" name="lieu" placeholder="Adresse ou description du lieu" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nombre">Nombre de personnes *</label>
+              <input type="number" id="nombre" [ngModel]="reservationNombrePersonnes()" (ngModelChange)="reservationNombrePersonnes.set($event)" name="nombrePersonnes" required>
+            </div>
+
+            <div class="form-group">
+              <label for="budget">Budget total (€) *</label>
+              <input type="text" id="budget" [ngModel]="reservationBudget()" (ngModelChange)="reservationBudget.set($event)" name="budget" placeholder="Montant" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes et exigences particulières</label>
+            <textarea id="notes" [ngModel]="reservationNotes()" (ngModelChange)="reservationNotes.set($event)" name="notes" rows="4" placeholder="Ambiance souhaitée, durée, pauses, etc."></textarea>
+          </div>
+
+          <div class="form-divider"></div>
+
+          <h3>Vos coordonnées</h3>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="prenom">Prénom *</label>
+              <input type="text" id="prenom" [ngModel]="reservationPrenom()" (ngModelChange)="reservationPrenom.set($event)" name="prenom" required>
+            </div>
+
+            <div class="form-group">
+              <label for="nom">Nom *</label>
+              <input type="text" id="nom" [ngModel]="reservationNom()" (ngModelChange)="reservationNom.set($event)" name="nom" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" [ngModel]="reservationEmail()" (ngModelChange)="reservationEmail.set($event)" name="email" required>
+          </div>
+
+          <div class="form-group">
+            <label for="telephone">Téléphone *</label>
+            <input type="tel" id="telephone" [ngModel]="reservationTelephone()" (ngModelChange)="reservationTelephone.set($event)" name="telephone" required>
+          </div>
+        </form>
+
+        <!-- Summary -->
+        <div class="summary-section">
+          <h3>Résumé de la réservation</h3>
+          <div class="summary-item">
+            <span>Prestation:</span>
+            <strong>{{ selectedPrestation()?.nom_prestation }}</strong>
+          </div>
+          <div class="summary-item">
+            <span>Date & Heure:</span>
+            <strong>{{ reservationDate() }} à {{ reservationHeure() }}</strong>
+          </div>
+          <div class="summary-item">
+            <span>Lieu:</span>
+            <strong>{{ reservationLieu() }}</strong>
+          </div>
+          <div class="summary-item">
+            <span>Nombre de personnes:</span>
+            <strong>{{ reservationNombrePersonnes() }}</strong>
+          </div>
+          <div class="summary-item total">
+            <span>Budget:</span>
+            <strong>{{ reservationBudget() }} €</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeReservationModal()">Annuler</button>
+        <button class="btn-confirm" (click)="confirmReservation()">Confirmer la réservation</button>
+      </div>
+    </div>
+  </div>
+</div>

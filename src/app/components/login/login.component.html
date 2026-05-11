@@ -1,0 +1,76 @@
+<div class="login-container">
+  <div class="login-box">
+    <div class="header">
+      <h1>🎵 Sun & Bass</h1>
+      <p>Réservez votre DJ pour l'événement de vos rêves</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          [(ngModel)]="email"
+          name="email"
+          placeholder="votre@email.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input
+          type="password"
+          id="password"
+          [(ngModel)]="password"
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <div *ngIf="error()" class="error-message">
+        ⚠️ {{ error() }}
+      </div>
+
+      <button type="submit" class="btn-login" [disabled]="loading()">
+        {{ loading() ? 'Connexion en cours...' : 'Se connecter' }}
+      </button>
+    </form>
+
+    <div class="divider">ou</div>
+
+    <button (click)="goToRegister()" class="btn-register">
+      Créer un nouveau compte
+    </button>
+
+    <div class="demo-section">
+      <p class="demo-text">Comptes de démonstration :</p>
+      <div class="demo-section-title">� Admin</div>
+      <div class="demo-buttons">
+        <button (click)="fillDemoCredentials(0)" class="demo-btn demo-admin">
+          Super Admin
+        </button>
+      </div>
+      <div class="demo-section-title">👥 Clients</div>
+      <div class="demo-buttons">
+        <button (click)="fillDemoCredentials(1)" class="demo-btn demo-client">
+          Jean Dupont
+        </button>
+        <button (click)="fillDemoCredentials(2)" class="demo-btn demo-client">
+          Marie Martin
+        </button>
+      </div>
+      <div class="demo-section-title">👨‍💼 Prestataires</div>
+      <div class="demo-buttons">
+        <button (click)="fillDemoCredentials(3)" class="demo-btn demo-prestataire">
+          Jean-Paul Rousseau (DJ)
+        </button>
+        <button (click)="fillDemoCredentials(4)" class="demo-btn demo-prestataire">
+          Sophie Bernard (Photo)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

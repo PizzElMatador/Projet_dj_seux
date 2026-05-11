@@ -1,0 +1,186 @@
+<div class="prestataire-container">
+  <!-- Header -->
+  <div class="header-bar">
+    <div class="header-content">
+      <div class="header-left">
+        <h1>Sun & Bass</h1>
+        <span class="badge">Espace Prestataire</span>
+      </div>
+      <div class="user-section" *ngIf="currentUser()">
+        <span class="user-name">{{ currentUser()?.prenom }} {{ currentUser()?.nom }}</span>
+        <button class="btn-profile" (click)="goToProfile()">Modifier le profil</button>
+        <button class="btn-logout" (click)="logout()">Déconnexion</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="content">
+    <!-- Title Section -->
+    <div class="dashboard-header">
+      <div>
+        <h2>Tableau de Bord</h2>
+        <p>Gérez vos annonces et prestations</p>
+      </div>
+      <button class="btn-create" (click)="openCreateModal()">+ Nouvelle Annonce</button>
+    </div>
+
+    <!-- Messages -->
+    <div *ngIf="successMessage()" class="message success-message">
+      {{ successMessage() }}
+    </div>
+    <div *ngIf="errorMessage()" class="message error-message">
+      {{ errorMessage() }}
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">📢</div>
+        <div class="stat-content">
+          <h3>{{ annonces().length }}</h3>
+          <p>Annonces actives</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-content">
+          <h3>4.8</h3>
+          <p>Note moyenne</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stat-content">
+          <h3>42</h3>
+          <p>Avis reçus</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stat-content">
+          <h3>12</h3>
+          <p>Réservations ce mois</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Annonces Section -->
+    <div class="annonces-section">
+      <h3>Mes Annonces</h3>
+
+      <!-- Loading State -->
+      <div *ngIf="loading()" class="loading">
+        <div class="spinner"></div>
+        <p>Chargement...</p>
+      </div>
+
+      <!-- Annonces List -->
+      <div *ngIf="!loading() && annonces().length > 0" class="annonces-list">
+        <div *ngFor="let annonce of annonces()" class="annonce-item">
+          <div class="annonce-header">
+            <div>
+              <h4>{{ annonce.nom_prestation }}</h4>
+              <span class="type-badge">{{ annonce.nom_type }}</span>
+            </div>
+            <div class="annonce-price">{{ annonce.prix | number: '1.2-2' }}€</div>
+          </div>
+
+          <p class="annonce-description">{{ annonce.description_presta }}</p>
+
+          <div class="annonce-footer">
+            <button class="btn-edit" (click)="openEditModal(annonce)">✎ Éditer</button>
+            <button class="btn-delete" (click)="deleteAnnonce(annonce.id_prestation)">🗑 Supprimer</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div *ngIf="!loading() && annonces().length === 0" class="empty-state">
+        <div class="empty-icon">📭</div>
+        <p>Aucune annonce pour le moment</p>
+        <button class="btn-create-empty" (click)="openCreateModal()">Créer votre première annonce</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create/Edit Modal -->
+  <div *ngIf="showCreateModal()" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="modal-close" (click)="closeModal()">✕</button>
+
+      <div class="modal-header">
+        <h2>{{ editingAnnonce() ? 'Éditer l\'annonce' : 'Nouvelle Annonce' }}</h2>
+      </div>
+
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="nom">Nom de la prestation *</label>
+            <input
+              type="text"
+              id="nom"
+              [ngModel]="nom_prestation()"
+              (ngModelChange)="nom_prestation.set($event)"
+              name="nom"
+              placeholder="Ex: DJ Set Tropical"
+            >
+          </div>
+
+          <div class="form-group">
+            <label for="type">Type de service *</label>
+            <select
+              id="type"
+              [ngModel]="id_type()"
+              (ngModelChange)="id_type.set($event)"
+              name="type"
+            >
+              <option *ngFor="let type of serviceTypes()" [value]="type.id">
+                {{ type.nom }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description *</label>
+            <textarea
+              id="description"
+              [ngModel]="description_presta()"
+              (ngModelChange)="description_presta.set($event)"
+              name="description"
+              placeholder="Décrivez votre prestation, ce qu'elle inclut, votre style, etc."
+              rows="5"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="prix">Prix (€) *</label>
+            <input
+              type="number"
+              id="prix"
+              [ngModel]="prix()"
+              (ngModelChange)="prix.set($event)"
+              name="prix"
+              placeholder="À partir de..."
+              step="0.01"
+              min="0"
+            >
+          </div>
+
+          <div *ngIf="errorMessage()" class="form-error">
+            {{ errorMessage() }}
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeModal()" [disabled]="loading()">
+          Annuler
+        </button>
+        <button class="btn-save" (click)="saveAnnonce()" [disabled]="loading()">
+          {{ loading() ? 'En cours...' : (editingAnnonce() ? 'Mettre à jour' : 'Publier') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

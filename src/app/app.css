@@ -1,0 +1,37 @@
+:host {
+  --open-sans: "Open Sans", sans-serif;
+  --inter: "Inter", sans-serif;
+
+  font-family: var(--open-sans);
+
+  --toile-white: #ffffff;
+  --chalk: #f4f4f4;
+  --ink: #000000;
+
+  --success: #6cc24a;
+  --caution: #f0ad4e;
+  --error: #c1272d;
+  --info: #0099d8;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background: white;
+}
