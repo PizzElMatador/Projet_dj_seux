@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Reservation {
   id_reservation: number;
@@ -32,7 +33,7 @@ export interface UserManagement {
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'https://localhost:7051';
+  private apiUrl = environment.apiUrl;
   
   private reservationHistory = new BehaviorSubject<Reservation[]>([]);
   public reservationHistory$ = this.reservationHistory.asObservable();

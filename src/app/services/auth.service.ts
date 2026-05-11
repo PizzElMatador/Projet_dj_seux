@@ -2,12 +2,13 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, catchError, of } from 'rxjs';
 import { LoginRequest, RegisterRequest, AuthResponse, Client } from '../models/user.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'https://localhost:7051/Auth';
+  private apiUrl = environment.apiUrl;
   
   private currentUserSubject = new BehaviorSubject<Client | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
@@ -30,8 +31,8 @@ export class AuthService {
     }
   }
 
- login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<any>(`${this.apiUrl}/Login`, {
+  login(request: LoginRequest): Observable<AuthResponse> {
+    return this.http.post<any>(`${this.apiUrl}/Auth/Login`, {
       email: request.email,
       password: request.mot_de_passe
     }).pipe(
@@ -61,9 +62,9 @@ export class AuthService {
         }
       }),
       catchError(error => {
-        console.log('LOGIN STATUS:', error.status);      // ← ajouté
-        console.log('LOGIN ERREUR:', error.error);       // ← ajouté
-        console.log('LOGIN MESSAGE:', error.message);    // ← ajouté
+        console.log('LOGIN STATUS:', error.status);
+        console.log('LOGIN ERREUR:', error.error);
+        console.log('LOGIN MESSAGE:', error.message);
         this.isAuthenticated.set(false);
         return of({
           success: false,
@@ -74,7 +75,7 @@ export class AuthService {
   }
 
   register(request: RegisterRequest): Observable<AuthResponse> {
-    return this.http.post<any>(`${this.apiUrl}/Register`, {
+    return this.http.post<any>(`${this.apiUrl}/Auth/Register`, {
       email: request.email,
       password: request.password,
       firstName: request.prenom,
@@ -88,8 +89,8 @@ export class AuthService {
           const client: Client = {
             id: response.user?.id || 0,
             id_utilisateur: 0,
-            nom: response.user?.lastName || request.nom,       // ← récupéré depuis l'API
-            prenom: response.user?.firstName || request.prenom, // ← récupéré depuis l'API
+            nom: response.user?.lastName || request.nom,
+            prenom: response.user?.firstName || request.prenom,
             email: request.email,
             date_inscription: new Date(),
             id_role: 3,
@@ -115,7 +116,7 @@ export class AuthService {
   }
 
   getCurrentUser(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/Me`);
+    return this.http.get<any>(`${this.apiUrl}/Auth/Me`);
   }
 
   logout(): void {

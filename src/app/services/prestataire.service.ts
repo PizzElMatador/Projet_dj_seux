@@ -3,13 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Prestation, Prestataire } from '../models/prestation.model';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrestataireService {
-  private apiUrl = 'https://localhost:7051/Prestation';
-
+  private apiUrl = environment.apiUrl;
+  
   constructor(private http: HttpClient) { }
 
   getAnnoncesByPrestataire(prestatairId: number): Observable<Prestation[]> {
