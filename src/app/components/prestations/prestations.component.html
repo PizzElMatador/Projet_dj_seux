@@ -29,18 +29,15 @@
       <div *ngFor="let prestation of prestations()" class="prestation-card">
         <div class="card-header">
           <h3>{{ prestation.nom_prestation }}</h3>
-          <div class="rating">
-            <span *ngFor="let star of getStarArray(prestation.prestataire.note)" class="star" [class.filled]="star === 1">★</span>
-            <span class="rating-text">{{ prestation.prestataire.note?.toFixed(1) }} ({{ prestation.prestataire.nombreAvis }} avis)</span>
-          </div>
+          
         </div>
 
         <p class="description">{{ prestation.description_presta }}</p>
 
         <div class="card-body">
           <div class="prestataire-info">
-            <h4>{{ prestation.prestataire.prenom }} {{ prestation.prestataire.nom }}</h4>
-            <p class="email">{{ prestation.prestataire.email }}</p>
+            <h4>{{ prestation.prestataire?.prenom }} {{ prestation.prestataire?.nom }}</h4>
+            <p class="email">{{ prestation.prestataire?.email }}</p>
           </div>
 
           <div class="card-footer">
