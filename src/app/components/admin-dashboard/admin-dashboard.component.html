@@ -42,7 +42,7 @@
     <!-- TAB 1: RÉSERVATIONS -->
     <div *ngIf="activeTab() === 'reservations'" class="tab-content">
       <h2>Historique des réservations</h2>
-      
+
       <div *ngIf="loading()" class="loading">Chargement...</div>
 
       <table *ngIf="!loading() && reservations().length > 0" class="reservations-table">
@@ -69,7 +69,7 @@
       </table>
 
       <div *ngIf="!loading() && reservations().length === 0" class="no-data">
-        Aucune réservation found
+        Aucune réservation trouvée
       </div>
     </div>
 
@@ -93,7 +93,7 @@
         </thead>
         <tbody>
           <tr *ngFor="let user of users()" [class.banned]="user.is_banned">
-            <td>{{ user.id || user.id_utilisateur }}</td>
+            <td>{{ user.id ?? user.id_utilisateur }}</td>
             <td>{{ user.prenom }} {{ user.nom }}</td>
             <td>{{ user.email }}</td>
             <td>
@@ -109,15 +109,16 @@
             </td>
             <td class="actions">
               <button
-                (click)="changeUserRole(user.id || user.id_utilisateur, user.role || '')"
+                (click)="changeUserRole((user.id ?? user.id_utilisateur)!, user.role ?? '')"
                 class="btn btn-role"
                 [disabled]="user.is_banned"
                 title="Changer le rôle"
               >
                 🔄 Rôle
               </button>
+
               <button
-                (click)="toggleBan(user.id || user.id_utilisateur, user.prenom + ' ' + user.nom, user.is_banned)"
+                (click)="toggleBan((user.id ?? user.id_utilisateur)!, user.prenom + ' ' + user.nom, user.is_banned)"
                 [class]="user.is_banned ? 'btn btn-unban' : 'btn btn-ban'"
                 [title]="user.is_banned ? 'Débannir' : 'Bannir'"
               >
@@ -138,12 +139,25 @@
   <div *ngIf="selectedRoleChange()" class="modal-overlay" (click)="closeRoleModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <h3>Changer le rôle</h3>
-      <p>Êtes-vous sûr de vouloir assigner le rôle <strong>{{ selectedRoleChange()?.newRole }}</strong> ?</p>
+      <p>
+        Êtes-vous sûr de vouloir assigner le rôle
+        <strong>{{ selectedRoleChange()?.newRole }}</strong> ?
+      </p>
+
       <div class="modal-actions">
-        <button (click)="confirmRoleChange()" class="btn btn-success" [disabled]="loading()">
+        <button
+          (click)="confirmRoleChange()"
+          class="btn btn-success"
+          [disabled]="loading()"
+        >
           Confirmer
         </button>
-        <button (click)="closeRoleModal()" class="btn btn-cancel" [disabled]="loading()">
+
+        <button
+          (click)="closeRoleModal()"
+          class="btn btn-cancel"
+          [disabled]="loading()"
+        >
           Annuler
         </button>
       </div>
@@ -154,17 +168,35 @@
   <div *ngIf="selectedUserForBan()" class="modal-overlay" (click)="closeBanModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <h3>Confirmer l'action</h3>
-      <p *ngIf="!users().find(u => (u.id || u.id_utilisateur) === selectedUserForBan()?.userId)?.is_banned">
-        Vous êtes sur le point de <strong>bannir</strong> {{ selectedUserForBan()?.name }}. Cette action empêchera l'utilisateur de se connecter.
+
+      <p
+        *ngIf="!users().find(u => (u.id ?? u.id_utilisateur) === selectedUserForBan()?.userId)?.is_banned"
+      >
+        Vous êtes sur le point de <strong>bannir</strong>
+        {{ selectedUserForBan()?.name }}. Cette action empêchera l'utilisateur de se connecter.
       </p>
-      <p *ngIf="users().find(u => (u.id || u.id_utilisateur) === selectedUserForBan()?.userId)?.is_banned">
-        Vous êtes sur le point de <strong>débannir</strong> {{ selectedUserForBan()?.name }}. L'utilisateur pourra à nouveau se connecter.
+
+      <p
+        *ngIf="users().find(u => (u.id ?? u.id_utilisateur) === selectedUserForBan()?.userId)?.is_banned"
+      >
+        Vous êtes sur le point de <strong>débannir</strong>
+        {{ selectedUserForBan()?.name }}. L'utilisateur pourra à nouveau se connecter.
       </p>
+
       <div class="modal-actions">
-        <button (click)="confirmBan()" class="btn btn-success" [disabled]="loading()">
+        <button
+          (click)="confirmBan()"
+          class="btn btn-success"
+          [disabled]="loading()"
+        >
           Confirmer
         </button>
-        <button (click)="closeBanModal()" class="btn btn-cancel" [disabled]="loading()">
+
+        <button
+          (click)="closeBanModal()"
+          class="btn btn-cancel"
+          [disabled]="loading()"
+        >
           Annuler
         </button>
       </div>
