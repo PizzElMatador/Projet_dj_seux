@@ -65,6 +65,9 @@ export class AdminDashboardComponent implements OnInit {
     this.loading.set(true);
     this.adminService.getAllUsers().subscribe({
       next: (data) => {
+        console.log('Utilisateurs chargés:', data);
+        console.log('Premier utilisateur:', data[0]);
+        console.log('Clés du premier utilisateur:', Object.keys(data[0]));
         this.users.set(data);
         this.loading.set(false);
       },
@@ -77,6 +80,7 @@ export class AdminDashboardComponent implements OnInit {
 
   // Changer le rôle d'un utilisateur
   changeUserRole(userId: number, currentRole: string): void {
+    console.log('changeUserRole appelé avec userId:', userId, 'currentRole:', currentRole);
     const roles: ('Admin' | 'Manager' | 'User')[] = ['Admin', 'Manager', 'User'];
     const currentIndex = roles.indexOf(currentRole as any);
     const newRole = roles[(currentIndex + 1) % roles.length];
@@ -92,14 +96,18 @@ export class AdminDashboardComponent implements OnInit {
     this.loading.set(true);
     this.adminService.assignRole(change.userId, change.newRole).subscribe({
       next: (response) => {
+        console.log('Réponse du changement de rôle:', response);
         if (response.success) {
           this.successMessage.set(response.message);
           this.loadUsers();
           this.selectedRoleChange.set(null);
+        } else {
+          this.errorMessage.set(response.message || 'Erreur lors du changement de rôle');
         }
         this.loading.set(false);
       },
       error: (err) => {
+        console.error('Erreur HTTP:', err);
         this.errorMessage.set('Erreur lors du changement de rôle');
         this.loading.set(false);
       }
@@ -116,20 +124,24 @@ export class AdminDashboardComponent implements OnInit {
     const banInfo = this.selectedUserForBan();
     if (!banInfo) return;
 
-    const user = this.users().find(u => u.id_utilisateur === banInfo.userId);
+    const user = this.users().find(u => (u.id || u.id_utilisateur) === banInfo.userId);
     const shouldBan = !user?.is_banned;
 
     this.loading.set(true);
     this.adminService.toggleBanUser(banInfo.userId, shouldBan).subscribe({
       next: (response) => {
+        console.log('Réponse du bannissement:', response);
         if (response.success) {
           this.successMessage.set(response.message);
           this.loadUsers();
           this.selectedUserForBan.set(null);
+        } else {
+          this.errorMessage.set(response.message || 'Erreur lors du bannissement');
         }
         this.loading.set(false);
       },
       error: (err) => {
+        console.error('Erreur HTTP bannissement:', err);
         this.errorMessage.set('Erreur lors du bannissement');
         this.loading.set(false);
       }

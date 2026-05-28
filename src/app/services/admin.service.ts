@@ -19,11 +19,12 @@ export interface Reservation {
 }
 
 export interface UserManagement {
-  id_utilisateur: number;
+  id?: number;              // ← Ajouté (c'est l'ID mappé depuis la classe C# "Id")
+  id_utilisateur?: number;  // ← Gardé pour compatibilité
   nom: string;
   prenom: string;
   email: string;
-  id_role: number;
+  id_role?: number;
   role?: 'Admin' | 'Manager' | 'User';
   is_banned: boolean;
   date_inscription: Date;
@@ -73,21 +74,39 @@ export class AdminService {
 
   // Assigner un rôle à un utilisateur
   assignRole(userId: number, newRole: 'Admin' | 'Manager' | 'User'): Observable<{ success: boolean; message: string }> {
-    // TODO: Ajouter un endpoint pour assigner un rôle
-    return of({
-      success: true,
-      message: `Rôle ${newRole} assigné avec succès à l'utilisateur ${userId}`
-    });
+    const url = `${this.apiUrl}/User/UpdateRole?userId=${userId}&newRole=${newRole}`;
+    console.log('Envoi requête POST vers:', url);
+    return this.http.post<{ success: boolean; message: string }>(url, {}).pipe(
+      catchError(error => {
+        console.error('Erreur lors de la modification du rôle:', error);
+        console.error('URL:', url);
+        console.error('Status:', error.status);
+        console.error('Message:', error.error?.message || error.statusText);
+        return of({
+          success: false,
+          message: error.error?.message || `Erreur serveur (${error.status})`
+        });
+      })
+    );
   }
 
   // Bannir/Débannir un utilisateur
   toggleBanUser(userId: number, ban: boolean): Observable<{ success: boolean; message: string }> {
-    // TODO: Ajouter un endpoint pour ban/unban
-    const action = ban ? 'banni' : 'débanni';
-    return of({
-      success: true,
-      message: `L'utilisateur a été ${action} avec succès`
-    });
+    const action = ban ? 'Ban' : 'Unban';
+    const url = `${this.apiUrl}/User/${action}?userId=${userId}`;
+    console.log('Envoi requête POST vers:', url);
+    return this.http.post<{ success: boolean; message: string }>(url, {}).pipe(
+      catchError(error => {
+        console.error(`Erreur lors du ${action.toLowerCase()}:`, error);
+        console.error('URL:', url);
+        console.error('Status:', error.status);
+        console.error('Message:', error.error?.message || error.statusText);
+        return of({
+          success: false,
+          message: error.error?.message || `Erreur serveur (${error.status})`
+        });
+      })
+    );
   }
 
   // Supprimer un utilisateur
