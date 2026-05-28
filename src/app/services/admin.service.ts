@@ -62,14 +62,14 @@ export class AdminService {
   }
 
   // Obtenir tous les utilisateurs pour gestion
-  getAllUsers(): Observable<UserManagement[]> {
-    return this.http.get<any[]>(`${this.apiUrl}/User/Search`).pipe(
-      catchError(error => {
-        console.error('Erreur:', error);
-        return of([]);
-      })
-    );
-  }
+ getAllUsers(): Observable<UserManagement[]> {
+  return this.http.get<UserManagement[]>(`${this.apiUrl}/User/GetAll`).pipe(
+    catchError(error => {
+      console.error('Erreur:', error);
+      return of([]);
+    })
+  );
+}
 
   // Assigner un rôle à un utilisateur
   assignRole(userId: number, newRole: 'Admin' | 'Manager' | 'User'): Observable<{ success: boolean; message: string }> {
