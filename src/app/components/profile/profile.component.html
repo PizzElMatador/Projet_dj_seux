@@ -166,8 +166,14 @@
         </div>
       </div>
 
+      <div class="profile-actions">
+  <button class="btn-edit" (click)="toggleReservations()">
+    {{ showReservations() ? 'Masquer l’historique' : 'Voir mon historique' }}
+  </button>
+</div>
+
       <!-- Reservations History Section -->
-      <div class="reservations-section">
+      <div class="reservations-section" *ngIf="showReservations()">
         <h3>📋 Historique de mes réservations</h3>
 
         <!-- Loading State -->
@@ -193,11 +199,16 @@
       </div>
 
       <div class="detail-item">
-        <span class="detail-label">📅 Date prestation:</span>
-        <span class="detail-value">
-          {{ reservation.date_prestation | date: 'dd/MM/yyyy' }}
-        </span>
-      </div>
+  <span class="detail-label">📅 Date prestation:</span>
+  <span class="detail-value">
+    {{ reservation.date_prestation | date: 'dd/MM/yyyy' }}
+  </span>
+</div>
+
+<div class="detail-item">
+  <span class="detail-label">📌 Statut:</span>
+  <span class="detail-value">{{ reservation.statut }}</span>
+</div>
     </div>
 
     <div class="reservation-footer">

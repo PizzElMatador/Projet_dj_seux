@@ -10,12 +10,13 @@ import { environment } from '../../environments/environment';
 })
 export class PrestataireService {
   private apiUrl = environment.apiUrl;
-  
+
   constructor(private http: HttpClient) { }
 
-  getAnnoncesByPrestataire(prestatairId: number): Observable<Prestation[]> {
-    // TODO: Ajouter un endpoint pour filtrer par prestataire
-    return this.http.get<Prestation[]>(`${this.apiUrl}/Search`).pipe(
+  getAnnoncesByPrestataire(prestataireId: number): Observable<Prestation[]> {
+    return this.http.get<Prestation[]>(
+      `${this.apiUrl}/Prestation/Search?id_prestataire=${prestataireId}`
+    ).pipe(
       catchError(error => {
         console.error('Erreur:', error);
         return of([]);
@@ -24,7 +25,9 @@ export class PrestataireService {
   }
 
   getAllAnnonces(): Observable<Prestation[]> {
-    return this.http.get<Prestation[]>(`${this.apiUrl}/Search`).pipe(
+    return this.http.get<Prestation[]>(
+      `${this.apiUrl}/Prestation/Search`
+    ).pipe(
       catchError(error => {
         console.error('Erreur:', error);
         return of([]);
@@ -46,10 +49,14 @@ export class PrestataireService {
       prix: data.prix,
       id_type: data.id_type,
       nom_type: data.nom_type,
+      id_prestataire: prestataire.id,
       prestataire
     };
 
-    return this.http.post<Prestation>(`${this.apiUrl}/Add`, newAnnonce);
+    return this.http.post<Prestation>(
+      `${this.apiUrl}/Prestation/Add`,
+      newAnnonce
+    );
   }
 
   updateAnnonce(id: number, data: {
@@ -59,27 +66,27 @@ export class PrestataireService {
     nom_type: string;
     id_type: number;
   }): Observable<Prestation> {
-    // TODO: Ajouter un endpoint PUT dans le contrôleur
-    const updatedAnnonce: Prestation = {
+    const updatedAnnonce: Partial<Prestation> = {
       id_prestation: id,
       nom_prestation: data.nom_prestation,
       description_presta: data.description_presta,
       prix: data.prix,
-      id_type: data.id_type,
-      nom_type: data.nom_type,
-      prestataire: {} as Prestataire
+      id_type: data.id_type
     };
-    
-    return this.http.put<Prestation>(`${this.apiUrl}/Update/${id}`, updatedAnnonce);
+
+    return this.http.put<Prestation>(
+      `${this.apiUrl}/Prestation/Update/${id}`,
+      updatedAnnonce
+    );
   }
 
   deleteAnnonce(id: number): Observable<boolean> {
-    // TODO: Ajouter un endpoint DELETE dans le contrôleur
-    return this.http.delete<boolean>(`${this.apiUrl}/Delete/${id}`);
+    return this.http.delete<boolean>(
+      `${this.apiUrl}/Prestation/Delete/${id}`
+    );
   }
 
   getServiceTypes(): Observable<{ id: number; nom: string }[]> {
-    // TODO: Créer un endpoint pour les types de services
     return of([
       { id: 1, nom: 'Musique - DJ' },
       { id: 2, nom: 'Photographie' },
@@ -90,4 +97,24 @@ export class PrestataireService {
       { id: 7, nom: 'Transport' }
     ]);
   }
+
+  acceptReservation(id: number): Observable<any> {
+  return this.http.put(
+    `${this.apiUrl}/Reservation/Accept/${id}`,
+    {}
+  );
+}
+
+refuseReservation(id: number): Observable<any> {
+  return this.http.put(
+    `${this.apiUrl}/Reservation/Refuse/${id}`,
+    {}
+  );
+}
+
+getReservationsByPrestataire(id: number): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/Reservation/Prestataire?id=${id}`
+  );
+}
 }

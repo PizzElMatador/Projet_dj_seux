@@ -21,6 +21,7 @@ export class PrestataireDashboardComponent implements OnInit {
   loading = signal(false);
   successMessage = signal('');
   errorMessage = signal('');
+  reservations = signal<any[]>([]);
 
   showCreateModal = signal(false);
   editingAnnonce = signal<Prestation | null>(null);
@@ -43,6 +44,7 @@ export class PrestataireDashboardComponent implements OnInit {
     if (user) {
       this.currentUser.set(user);
       this.loadAnnonces();
+      this.loadReservations();
       this.loadServiceTypes();
     } else {
       this.router.navigate(['/login']);
@@ -52,7 +54,7 @@ export class PrestataireDashboardComponent implements OnInit {
   loadAnnonces(): void {
     this.loading.set(true);
     const prestataire: Prestataire = {
-      id: this.currentUser()?.id || 1,
+      id: this.currentUser()?.id_utilisateur || 1,
       nom: this.currentUser()?.nom || '',
       prenom: this.currentUser()?.prenom || '',
       email: this.currentUser()?.email || '',
@@ -121,7 +123,7 @@ export class PrestataireDashboardComponent implements OnInit {
     this.successMessage.set('');
 
     const prestataire: Prestataire = {
-      id: this.currentUser()?.id || 1,
+      id: this.currentUser()?.id_utilisateur || 1,
       nom: this.currentUser()?.nom || '',
       prenom: this.currentUser()?.prenom || '',
       email: this.currentUser()?.email || '',
@@ -208,4 +210,38 @@ export class PrestataireDashboardComponent implements OnInit {
   goToPrestations(): void {
     this.router.navigate(['/prestations']);
   }
+
+  loadReservations(): void {
+  const prestataireId = this.currentUser()?.id_utilisateur;
+
+  if (!prestataireId) {
+    return;
+  }
+
+  this.prestataireService.getReservationsByPrestataire(prestataireId)
+    .subscribe({
+      next: (data) => {
+        this.reservations.set(data);
+      },
+      error: (err) => {
+        console.error(err);
+      }
+    });
+}
+
+acceptReservation(id: number): void {
+  this.prestataireService.acceptReservation(id).subscribe({
+    next: () => {
+      this.loadReservations();
+    }
+  });
+}
+
+refuseReservation(id: number): void {
+  this.prestataireService.refuseReservation(id).subscribe({
+    next: () => {
+      this.loadReservations();
+    }
+  });
+}
 }

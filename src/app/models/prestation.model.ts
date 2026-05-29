@@ -5,6 +5,7 @@ export interface Prestation {
   prix: number;
   id_type: number;
   nom_type: string;
+  id_prestataire: number;
   prestataire: Prestataire;
 }
 
@@ -29,4 +30,5 @@ export interface Reservation {
   nom_prestation: string;
   client_nom: string;
   client_prenom: string;
+  statut: string;
 }

@@ -104,6 +104,65 @@
     </div>
   </div>
 
+  <!-- Réservations Reçues -->
+<div class="annonces-section">
+  <h3>Réservations Reçues</h3>
+
+  <div *ngIf="reservations().length === 0" class="empty-state">
+    <div class="empty-icon">📅</div>
+    <p>Aucune réservation pour le moment</p>
+  </div>
+
+  <div *ngFor="let reservation of reservations()" class="annonce-item">
+
+    <div class="annonce-header">
+      <div>
+        <h4>{{ reservation.nom_prestation }}</h4>
+        <span class="type-badge">
+          {{ reservation.statut }}
+        </span>
+      </div>
+    </div>
+
+    <p>
+      <strong>Client :</strong>
+      {{ reservation.client_prenom }}
+      {{ reservation.client_nom }}
+    </p>
+
+    <p>
+      <strong>Date prestation :</strong>
+      {{ reservation.date_prestation | date:'dd/MM/yyyy' }}
+    </p>
+
+    <p>
+      <strong>Lieu :</strong>
+      {{ reservation.rue }},
+      {{ reservation.ville }}
+    </p>
+
+    <div
+      class="annonce-footer"
+      *ngIf="reservation.statut === 'En attente'"
+    >
+      <button
+        class="btn-edit"
+        (click)="acceptReservation(reservation.id_reservation)"
+      >
+        ✅ Accepter
+      </button>
+
+      <button
+        class="btn-delete"
+        (click)="refuseReservation(reservation.id_reservation)"
+      >
+        ❌ Refuser
+      </button>
+    </div>
+
+  </div>
+</div>
+
   <!-- Create/Edit Modal -->
   <div *ngIf="showCreateModal()" class="modal-overlay" (click)="closeModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">

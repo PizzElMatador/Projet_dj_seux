@@ -51,9 +51,10 @@ export class AuthService {
             email: response.user?.email || request.email,
             date_inscription: new Date(),
             id_role: response.user?.roles?.includes('Admin') ? 1 : 
-                      response.user?.roles?.includes('Prestataire') ? 2 : 3,
-            role: response.user?.roles?.includes('Admin') ? 'Admin' : 
-                  response.user?.roles?.includes('Prestataire') ? 'Manager' : 'User',
+          response.user?.roles?.includes('Manager') ? 2 : 3,
+
+role: response.user?.roles?.includes('Admin') ? 'Admin' : 
+      response.user?.roles?.includes('Manager') ? 'Manager' : 'User',
             is_banned: false
           };
           

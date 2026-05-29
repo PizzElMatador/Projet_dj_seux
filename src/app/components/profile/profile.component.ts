@@ -18,6 +18,7 @@ export class ProfileComponent implements OnInit {
   currentUser = signal<Client | null>(null);
   editMode = signal(false);
   loading = signal(false);
+  showReservations = signal(false);
   successMessage = signal('');
   errorMessage = signal('');
   reservations = signal<Reservation[]>([]);
@@ -175,4 +176,8 @@ export class ProfileComponent implements OnInit {
   goToPrestations(): void {
     this.router.navigate(['/prestations']);
   }
+
+  toggleReservations(): void {
+  this.showReservations.set(!this.showReservations());
+}
 }
