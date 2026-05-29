@@ -58,9 +58,13 @@ export class AdminService {
 
   // Charger l'historique des réservations
   getReservationHistory(): Observable<Reservation[]> {
-    // TODO: Créer un ReservationController
-    return of([]);
-  }
+    return this.http.get<Reservation[]>(`${this.apiUrl}/Reservation/GetAll`).pipe(
+        catchError(error => {
+            console.error('Erreur:', error);
+            return of([]);
+        })
+    );
+}
 
   // Obtenir tous les utilisateurs pour gestion
  getAllUsers(): Observable<UserManagement[]> {

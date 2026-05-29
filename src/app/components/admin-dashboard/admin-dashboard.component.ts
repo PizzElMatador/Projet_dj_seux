@@ -46,19 +46,21 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // Charger l'historique des réservations
-  loadReservations(): void {
+ loadReservations(): void {
     this.loading.set(true);
     this.adminService.getReservationHistory().subscribe({
-      next: (data) => {
-        this.reservations.set(data);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        this.errorMessage.set('Erreur lors du chargement des réservations');
-        this.loading.set(false);
-      }
+        next: (data) => {
+            console.log('Réservations reçues:', data);
+            this.reservations.set(data);
+            this.loading.set(false);
+        },
+        error: (err) => {
+            console.error('Erreur réservations:', err);
+            this.errorMessage.set('Erreur lors du chargement des réservations');
+            this.loading.set(false);
+        }
     });
-  }
+}
 
   // Charger tous les utilisateurs
   loadUsers(): void {

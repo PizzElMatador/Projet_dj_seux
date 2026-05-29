@@ -41,7 +41,7 @@ export class ProfileComponent implements OnInit {
     if (user) {
       this.currentUser.set(user);
       this.initializeForm(user);
-      this.loadReservations(user.id);
+      this.loadReservations(user.id_utilisateur);
     } else {
       this.router.navigate(['/login']);
     }

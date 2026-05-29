@@ -176,63 +176,37 @@
           <p>Chargement des réservations...</p>
         </div>
 
-        <!-- Reservations List -->
-        <div *ngIf="!loadingReservations() && reservations().length > 0" class="reservations-list">
-          <div *ngFor="let reservation of reservations()" class="reservation-card">
-            <!-- Header -->
-            <div class="reservation-header">
-              <div class="reservation-title">
-                <h4>{{ reservation.nom_prestation }}</h4>
-                <span [ngClass]="'badge ' + getStatusBadgeClass(reservation.statut)">
-                  {{ getStatusLabel(reservation.statut) }}
-                </span>
-              </div>
-              <div class="reservation-date">
-                {{ reservation.date_reservation | date: 'dd/MM/yyyy' }}
-              </div>
-            </div>
+       <!-- Reservations List -->
+<div *ngIf="!loadingReservations() && reservations().length > 0" class="reservations-list">
+  <div *ngFor="let reservation of reservations()" class="reservation-card">
+    <div class="reservation-header">
+      <h4>{{ reservation.nom_prestation }}</h4>
+      <div class="reservation-date">
+        {{ reservation.date_prestation | date: 'dd/MM/yyyy' }}
+      </div>
+    </div>
 
-            <!-- Prestataire Info -->
-            <div class="prestataire-info">
-              <p>
-                <strong>Prestataire:</strong> 
-                {{ reservation.prestataire_prenom }} {{ reservation.prestataire_nom }}
-              </p>
-            </div>
+    <div class="reservation-details">
+      <div class="detail-item">
+        <span class="detail-label">📍 Lieu:</span>
+        <span class="detail-value">{{ reservation.rue }}</span>
+      </div>
 
-            <!-- Reservation Details -->
-            <div class="reservation-details">
-              <div class="detail-item">
-                <span class="detail-label">⏰ Heure:</span>
-                <span class="detail-value">{{ reservation.heure_reservation }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">📍 Lieu:</span>
-                <span class="detail-value">{{ reservation.lieu_reservation }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">👥 Personnes:</span>
-                <span class="detail-value">{{ reservation.nombre_personnes }}</span>
-              </div>
-              <div class="detail-item">
-                <span class="detail-label">💰 Budget:</span>
-                <span class="detail-value">{{ reservation.budget | number: '1.2-2' }}€</span>
-              </div>
-            </div>
+      <div class="detail-item">
+        <span class="detail-label">📅 Date prestation:</span>
+        <span class="detail-value">
+          {{ reservation.date_prestation | date: 'dd/MM/yyyy' }}
+        </span>
+      </div>
+    </div>
 
-            <!-- Notes -->
-            <div *ngIf="reservation.notes" class="reservation-notes">
-              <p><strong>Notes:</strong> {{ reservation.notes }}</p>
-            </div>
-
-            <!-- Footer -->
-            <div class="reservation-footer">
-              <span class="reservation-date-created">
-                Réservée le {{ reservation.date_creation | date: 'dd/MM/yyyy' }}
-              </span>
-            </div>
-          </div>
-        </div>
+    <div class="reservation-footer">
+      <span class="reservation-date-created">
+        Réservée le {{ reservation.date_reservation | date: 'dd/MM/yyyy' }}
+      </span>
+    </div>
+  </div>
+</div>
 
         <!-- Empty State -->
         <div *ngIf="!loadingReservations() && reservations().length === 0" class="empty-state">

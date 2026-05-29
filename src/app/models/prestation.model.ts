@@ -19,17 +19,14 @@ export interface Prestataire {
 
 export interface Reservation {
   id_reservation: number;
-  id_client: number;
+  date_reservation: string;
+  date_prestation: string;
+  rue: string;
+  code_postal: number;
+  ville: string;
   id_prestation: number;
+  id_client: number;
   nom_prestation: string;
-  prestataire_nom: string;
-  prestataire_prenom: string;
-  date_reservation: Date;
-  heure_reservation: string;
-  lieu_reservation: string;
-  nombre_personnes: number;
-  budget: number;
-  notes: string;
-  statut: 'confirmée' | 'en attente' | 'annulée' | 'complétée';
-  date_creation: Date;
+  client_nom: string;
+  client_prenom: string;
 }
