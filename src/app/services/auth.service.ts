@@ -64,9 +64,9 @@ export class AuthService {
         }
       }),
       catchError(error => {
-        console.log('LOGIN STATUS:', error.status);
-        console.log('LOGIN ERREUR:', error.error);
-        console.log('LOGIN MESSAGE:', error.message);
+        //console.log('LOGIN STATUS:', error.status);
+        //console.log('LOGIN ERREUR:', error.error);
+        //console.log('LOGIN MESSAGE:', error.message);
         this.isAuthenticated.set(false);
         return of({
           success: false,
@@ -107,8 +107,8 @@ export class AuthService {
         }
       }),
       catchError(error => {
-        console.log('STATUS:', error.status);
-        console.log('ERREUR:', error.error);
+        //console.log('STATUS:', error.status);
+        //console.log('ERREUR:', error.error);
         return of({
           success: false,
           message: error.error?.message || 'Erreur d\'inscription'

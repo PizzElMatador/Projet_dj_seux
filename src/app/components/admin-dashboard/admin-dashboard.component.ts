@@ -67,9 +67,9 @@ export class AdminDashboardComponent implements OnInit {
     this.loading.set(true);
     this.adminService.getAllUsers().subscribe({
       next: (data) => {
-        console.log('Utilisateurs chargés:', data);
-        console.log('Premier utilisateur:', data[0]);
-        console.log('Clés du premier utilisateur:', Object.keys(data[0]));
+        //console.log('Utilisateurs chargés:', data);
+        //console.log('Premier utilisateur:', data[0]);
+        //console.log('Clés du premier utilisateur:', Object.keys(data[0]));
         this.users.set(data);
         this.loading.set(false);
       },

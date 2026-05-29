@@ -14,14 +14,13 @@ export class PrestationService {
   constructor(private http: HttpClient) { }
 
   getPrestations(): Observable<Prestation[]> {
-    return this.http.get<Prestation[]>(`${this.apiUrl}/Prestation/Search`).pipe(
-      tap(data => console.log('Prestations reçues:', data)),
-      catchError(error => {
-        console.error('Erreur lors de la récupération des prestations:', error);
-        return of([]);
-      })
-    );
-  }
+  return this.http.get<Prestation[]>(`${this.apiUrl}/Prestation/Search`).pipe(
+    catchError(error => {
+      console.error('Erreur lors de la récupération des prestations:', error);
+      return of([]);
+    })
+  );
+}
 
   getPrestationById(id: number): Observable<Prestation | undefined> {
     return this.http.get<Prestation>(`${this.apiUrl}/Prestation/Single?id=${id}`).pipe(
