@@ -37,6 +37,20 @@ export class PrestationService {
   }
 
   getReservationsByClient(clientId: number): Observable<Reservation[]> {
-    return of([]);
-  }
+  return this.http.get<Reservation[]>(
+    `${this.apiUrl}/Reservation/Client?id=${clientId}`
+  ).pipe(
+    catchError(error => {
+      console.error('Erreur lors de la récupération des réservations:', error);
+      return of([]);
+    })
+  );
+}
+
+createReservation(reservation: any): Observable<any> {
+  return this.http.post<any>(
+    `${this.apiUrl}/Reservation/Add`,
+    reservation
+  );
+}
 }

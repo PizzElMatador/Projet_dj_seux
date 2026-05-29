@@ -43,7 +43,7 @@ export class AuthService {
           
           const client: Client = {
             id: response.user?.id || 0,
-            id_utilisateur: 0,
+            id_utilisateur: response.user?.idUtilisateur || 0,
             nom: response.user?.lastName || '',
             prenom: response.user?.firstName || '',
             email: response.user?.email || request.email,
@@ -88,7 +88,7 @@ export class AuthService {
           
           const client: Client = {
             id: response.user?.id || 0,
-            id_utilisateur: 0,
+            id_utilisateur: response.user?.idUtilisateur || 0,
             nom: response.user?.lastName || request.nom,
             prenom: response.user?.firstName || request.prenom,
             email: request.email,

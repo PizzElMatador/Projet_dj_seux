@@ -80,11 +80,41 @@ export class PrestationsComponent implements OnInit {
   }
 
   confirmReservation(): void {
-    if (this.selectedPrestation()) {
-      alert(`Réservation confirmée pour ${this.selectedPrestation()?.nom_prestation}!\n\nDate: ${this.reservationDate()}\nLieu: ${this.reservationLieu()}\n\nUn email de confirmation a été envoyé.`);
-      this.closeReservationModal();
-    }
+  const prestation = this.selectedPrestation();
+  const user = this.currentUser();
+
+  console.log('prestation:', prestation);
+console.log('id_prestation:', prestation?.id_prestation);
+
+  if (!prestation || !user) {
+    alert("Impossible de créer la réservation.");
+    return;
   }
+
+ const reservation = {
+  Date_reservation: new Date().toISOString().split('T')[0],
+  Date_prestation: this.reservationDate(),
+  Rue: this.reservationLieu(),
+  Code_postal: 0,
+  Ville: 'Non renseignée',
+  Id_prestation: prestation.id_prestation,
+  Id_client: user.id_utilisateur
+};
+
+console.log('Réservation envoyée :', reservation);
+console.log('Réservation envoyée :', JSON.stringify(reservation));
+
+  this.prestationService.createReservation(reservation).subscribe({
+    next: () => {
+      alert('Réservation enregistrée avec succès !');
+      this.closeReservationModal();
+    },
+    error: (err) => {
+      console.error('Erreur réservation :', err);
+      alert("Erreur lors de l'enregistrement de la réservation.");
+    }
+  });
+}
 
   getStarArray(rating?: number): number[] {
     const stars: number[] = [];
