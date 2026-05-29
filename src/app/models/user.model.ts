@@ -13,6 +13,8 @@ export interface Client extends User {
   id: number;
   role?: 'Admin' | 'Manager' | 'User';
   is_banned?: boolean;
+  telephone?: string;
+  adresse?: string;
 }
 
 export interface Prestataire extends User {

@@ -46,6 +46,8 @@ export class AuthService {
             id_utilisateur: response.user?.idUtilisateur || 0,
             nom: response.user?.lastName || '',
             prenom: response.user?.firstName || '',
+            telephone: response.user?.telephone || '',
+            adresse: response.user?.adresse || '',
             email: response.user?.email || request.email,
             date_inscription: new Date(),
             id_role: response.user?.roles?.includes('Admin') ? 1 : 
@@ -133,6 +135,21 @@ export class AuthService {
     this.currentUser.set(updatedUser);
     this.currentUserSubject.next(updatedUser);
   }
+
+  updateProfile(updatedUser: Client): Observable<any> {
+  return this.http.put<any>(`${this.apiUrl}/User/UpdateProfile`, {
+    id: updatedUser.id_utilisateur,
+    nom: updatedUser.nom,
+    prenom: updatedUser.prenom,
+    email: updatedUser.email,
+    telephone: updatedUser.telephone || '',
+    adresse: updatedUser.adresse || ''
+  }).pipe(
+    tap(() => {
+      this.updateUser(updatedUser);
+    })
+  );
+}
 
   getToken(): string | null {
     return localStorage.getItem('token');

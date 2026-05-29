@@ -69,23 +69,22 @@ export class ProfileComponent implements OnInit {
   }
 
   saveProfile(): void {
-    if (this.validateForm()) {
-      this.loading.set(true);
-      this.errorMessage.set('');
-      this.successMessage.set('');
+  if (this.validateForm()) {
+    this.loading.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
 
-      // Simuler l'appel API
-      setTimeout(() => {
-        const updatedUser: Client = {
-          ...this.currentUser()!,
-          prenom: this.prenom(),
-          nom: this.nom(),
-          email: this.email(),
-          telephone: this.telephone(),
-          adresse: this.adresse(),
-        } as Client;
+    const updatedUser: Client = {
+      ...this.currentUser()!,
+      prenom: this.prenom(),
+      nom: this.nom(),
+      email: this.email(),
+      telephone: this.telephone(),
+      adresse: this.adresse(),
+    } as Client;
 
-        // Mettre à jour le service et le localStorage
+    this.authService.updateProfile(updatedUser).subscribe({
+      next: () => {
         this.authService.updateUser(updatedUser);
         this.currentUser.set(updatedUser);
 
@@ -93,13 +92,24 @@ export class ProfileComponent implements OnInit {
         this.editMode.set(false);
         this.loading.set(false);
 
-        // Masquer le message après 3 secondes
         setTimeout(() => {
           this.successMessage.set('');
         }, 3000);
-      }, 500);
-    }
+      },
+      error: (err) => {
+  console.error('STATUS:', err.status);
+  console.error('ERROR:', err.error);
+  console.error('FULL:', err);
+
+  this.errorMessage.set(
+    JSON.stringify(err.error)
+  );
+
+  this.loading.set(false);
+}
+    });
   }
+}
 
   validateForm(): boolean {
     if (!this.prenom().trim()) {
@@ -129,9 +139,11 @@ export class ProfileComponent implements OnInit {
         this.loadingReservations.set(false);
       },
       error: (err) => {
-        console.error('Erreur lors du chargement des réservations', err);
-        this.loadingReservations.set(false);
-      }
+  console.error('Erreur complète:', err);
+  console.error('Réponse API:', err.error);
+  this.errorMessage.set('Erreur lors de la mise à jour du profil');
+  this.loading.set(false);
+}
     });
   }
 
